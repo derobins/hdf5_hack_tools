@@ -16,6 +16,52 @@
 import re
 import sys
 
+# A dictionary of package names
+package_text = {
+    'H5'   : 'Generic Functions',
+    'H5A'  : 'Attributes',
+    'H5AC' : 'Metadata Cache',
+    'H5B'  : 'B-Trees (Version 1)',
+    'H5B2' : 'B-Trees (Version 2)',
+    'H5C'  : 'Cache',
+    'H5CS' : 'Function Stack',
+    'H5D'  : 'Datasets',
+    'H5E'  : 'Error Handling',
+    'H5EA' : 'Extensible Arrays',
+    'H5F'  : 'Files',
+    'H5FA' : 'Fixed Arrays',
+    'H5FD' : '(Virtual) File Drivers',
+    'H5FL' : 'Free Lists',
+    'H5FO' : 'File Objects',
+    'H5FS' : 'Free Space Management',
+    'H5G'  : 'Groups',
+    'H5HF' : 'Fractal Heaps',
+    'H5HG' : 'Global Heaps',
+    'H5HL' : 'Local Heaps',
+    'H5HP' : 'Heaps',
+    'H5I'  : 'Identifiers',
+    'H5L'  : 'Links',
+    'H5MF' : 'File Memory Management',
+    'H5MM' : 'Memory Management',
+    'H5MP' : 'Memory Pools',
+    'H5O'  : 'Object Headers',
+    'H5P'  : 'Property Lists',
+    'H5PB' : 'Page Buffering',
+    'H5PL' : 'Plugins',
+    'H5R'  : 'References',
+    'H5RS' : 'Reference-Counted Strings',
+    'H5S'  : 'Dataspaces',
+    'H5SL' : 'Skip Lists',
+    'H5SM' : 'Shared Object Header Messages',
+    'H5ST' : 'Ternary Search Trees',
+    'H5T'  : 'Datatypes',
+    'H5TS' : 'Thread-Safety',
+    'H5UC' : 'Reference-Counted Buffers',
+    'H5VL' : 'Virtual Object Layer',
+    'H5VM' : 'Vector Functions',
+    'H5WB' : 'Wrapped Buffers',
+    'H5Z'  : 'Data Filters'
+}
 
 # A regular expression to pull out package names from strings
 pkg_re = re.compile(r'(H5[A-Z][A-Z2]*)')
@@ -55,13 +101,45 @@ def process_file(filename) :
     useless_headers = included_headers - required_packages
     missing_headers = required_packages - included_headers
 
-    if len(useless_headers) > 0 or len(missing_headers) > 0 :
-        print(filename)
-        if len(useless_headers) > 0 :
-            print_set("USELESS HEADERS", useless_headers)
-        if len(missing_headers) > 0 :
-            print_set("MISSING HEADERS", missing_headers)
-        print()
+#   Print all headers for initial fixup. Change back later.
+#    if len(useless_headers) > 0 or len(missing_headers) > 0 :
+    print(filename)
+    if len(useless_headers) > 0 :
+        print_set("USELESS HEADERS", useless_headers)
+    if len(missing_headers) > 0 :
+        print_set("MISSING HEADERS", missing_headers)
+    generate_header_block(required_packages)
+    print()
+
+def generate_header_block(packages) :
+
+    print("NEW HEADER BLOCK (watch out for pkg!)")
+
+    # H5private.h always comes first
+    generate_header("H5")
+ 
+    for p in sorted(list(packages)) :
+        generate_header(p)
+
+def generate_header(package) :
+    # Start of open comment at column 33
+    col_1 = 33
+    # Start of close comment at column 77
+    col_2 = 77
+
+    text = "#include \"" + package + "private.h"
+
+    # Space between include file name and start of comment
+    spaces_1 = " " * (col_1 - len(text) - 1)
+
+    text = text + spaces_1 + "/* " + package_text[package]
+
+    # Space between comment text and end of comment
+    spaces_2 = " " * (col_2 - len(text) - 1)
+
+    text = text + spaces_2 + "*/"
+
+    print(text)
 
 def main() :
 
