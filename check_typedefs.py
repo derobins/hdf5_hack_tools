@@ -17,7 +17,7 @@ import re
 import sys
 
 # A regular expression to pull out type names from strings
-type_re = re.compile(r'(H5[A-Z][A-Z2]*\_\w+\_t)')
+type_re = re.compile(r'(H5[A-Z][A-Z2]*\_?\w*\_t)')
 
 # A regular expression to pull out package names from strings
 pkg_re = re.compile(r'(H5[A-Z][A-Z2]*)')
@@ -61,8 +61,11 @@ def process_file(filename) :
         print()
 
 def emit_typedefs(type_set) :
+    print("LIST OF TYPEDEFS")
+    print("for convenience, they are listed as typedef struct")
+    print("BUT SOME WILL BE ENUMS, ETC -- BE SURE TO CHECK")
     for t in sorted(list(type_set)) :
-        print("typedef struct " + t + ";")
+        print("typedef struct " + t + " " + t + ";")
 
 def main() :
 
