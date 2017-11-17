@@ -115,7 +115,8 @@ def process_file(filename) :
 
 def generate_header_block(packages) :
 
-    print("NEW HEADER BLOCK (watch out for pkg!)")
+    print("PROPOSED HEADER BLOCK")
+    print("CHECK TO ENSURE THEY ARE REALLY NEEDED!!!")
 
     # H5private.h always comes first
     generate_header("H5")
