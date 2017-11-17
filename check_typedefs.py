@@ -60,6 +60,10 @@ def process_file(filename) :
         print_set("FOUND TYPES", found_types)
         print()
 
+def emit_typedefs(type_set) :
+    for t in sorted(list(type_set)) :
+        print("typedef struct " + t + ";")
+
 def main() :
 
     print("HDF5 typedef check program")
@@ -69,6 +73,8 @@ def main() :
         process_file(filename)
 
     print_set("ALL TYPES FOUND", all_types_found)
+
+    emit_typedefs(all_types_found)
 
 if __name__ == "__main__" :
     main()
