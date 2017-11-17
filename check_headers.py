@@ -52,12 +52,15 @@ def process_file(filename) :
             else :
                 process_line(line, required_packages)
 
-    if len(required_packages) > 0 or len(included_headers) > 0 :
+    useless_headers = included_headers - required_packages
+    missing_headers = required_packages - included_headers
+
+    if len(useless_headers) > 0 or len(missing_headers) > 0 :
         print(filename)
-#    print_set("PACKAGES", required_packages)
-#    print_set("HEADERS", included_headers)
-        print_set("USELESS HEADERS", included_headers - required_packages)
-        print_set("MISSING HEADERS", required_packages - included_headers)
+        if len(useless_headers) > 0 :
+            print_set("USELESS HEADERS", useless_headers)
+        if len(missing_headers) > 0 :
+            print_set("MISSING HEADERS", missing_headers)
         print()
 
 def main() :
