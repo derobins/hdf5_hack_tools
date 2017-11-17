@@ -16,7 +16,7 @@
 import re
 import sys
 
-# A dictionary of package names
+# A dictionary that maps package names to descriptive text
 package_text = {
     'H5'   : 'Generic Functions',
     'H5A'  : 'Attributes',
@@ -127,7 +127,7 @@ def generate_header(package) :
     # Start of close comment at column 77
     col_2 = 77
 
-    text = "#include \"" + package + "private.h"
+    text = "#include \"" + package + "private.h\""
 
     # Space between include file name and start of comment
     spaces_1 = " " * (col_1 - len(text) - 1)
