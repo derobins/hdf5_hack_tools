@@ -66,12 +66,13 @@ package_text = {
 # A regular expression to pull out package names from strings
 pkg_re = re.compile(r'(H5[A-Z][A-Z2]*)')
 
-def process_line(line, destination_set) :
+def process_line(line, this_package, destination_set) :
 
     packages = pkg_re.findall(line)
 
     for pkg in packages :
-        destination_set.add(pkg)
+        if pkg != this_package :
+            destination_set.add(pkg)
 
 def print_set(string, set_to_print) :
     if len(set_to_print) > 0 :
@@ -81,9 +82,10 @@ def print_set(string, set_to_print) :
 
 def process_file(filename) :
 
+    # H5private will not match
     this_package = pkg_re.findall(filename)
     if len(this_package) > 0 :
-        this_package = this_package[0] + '_'
+        this_package = this_package[0]
     else :
         return
 
@@ -94,9 +96,9 @@ def process_file(filename) :
 
         for line in f :
             if line.startswith('#include') :
-                process_line(line, included_headers)
+                process_line(line, this_package, included_headers)
             else :
-                process_line(line, required_packages)
+                process_line(line, this_package, required_packages)
 
     useless_headers = included_headers - required_packages
     missing_headers = required_packages - included_headers
@@ -144,6 +146,9 @@ def generate_header(package) :
 def main() :
 
     print("HDF5 header check program")
+    print("BE CAREFUL OF DEFINED CONSTANTS!!!")
+    print("H5Fprivate.h, for example defines H5X constants")
+    print("so you don't need those header files.")
     print()
 
     for filename in sys.argv[1:] :
