@@ -433,7 +433,7 @@ print "Total files with warnings: $filecount\n\n";
 print "# of Warnings by frequency (file count)\n";
 print "=======================================\n";
 for my $x (sort {$warn_count{$b} <=> $warn_count{$a}} keys(%warn_count)) {
-    printf ("[%2d] %4d (%2d) - %s\n", $current_warning++, $warn_count{$x}, scalar(keys $warn_file_line{$x}), $x);
+    printf ("[%2d] %4d (%2d) - %s\n", $current_warning++, $warn_count{$x}, scalar(keys(%{$warn_file_line{$x}})), $x);
     if((exists $options{W}) || (exists $options{w})) {
         my $curr_index = $current_warning - 1;
 
@@ -456,7 +456,7 @@ for my $x (sort {$warn_count{$b} <=> $warn_count{$a}} keys(%warn_count)) {
 print "\n# of Warnings by filename (warning type)\n";
 print   "========================================\n";
 for my $x (sort {$file_count{$b} <=> $file_count{$a}} keys(%file_count)) {
-    printf ("[%3d] %4d (%2d) - %s\n", $current_file++, $file_count{$x}, scalar(keys $file_warn_line{$x}), $x);
+    printf ("[%3d] %4d (%2d) - %s\n", $current_file++, $file_count{$x}, scalar(keys(%{$file_warn_line{$x}})), $x);
     if((exists $options{F}) || (exists $options{f})) {
         my $curr_index = $current_file - 1;
 
