@@ -25,6 +25,7 @@ package_text = {
     'H5B2' : 'B-Trees (Version 2)',
     'H5C'  : 'Cache',
     'H5CS' : 'Function Stack',
+    'H5CX' : 'API Contexts',
     'H5D'  : 'Datasets',
     'H5E'  : 'Error Handling',
     'H5EA' : 'Extensible Arrays',
