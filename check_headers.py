@@ -83,6 +83,10 @@ def print_set(string, set_to_print) :
 
 def process_file(filename) :
 
+    # Ignore module headers, which should not require any included headers
+    if "module" in filename :
+        return
+
     # H5private will not match
     this_package = pkg_re.findall(filename)
     if len(this_package) > 0 :
@@ -92,12 +96,15 @@ def process_file(filename) :
 
     required_packages = set()
     included_headers = set()
+    friends = set()
 
     with open(filename, 'r') as f :
 
         for line in f :
-            if line.startswith('#include') :
+            if "#include" in line :
                 process_line(line, this_package, included_headers)
+            elif "FRIEND" in line:
+                process_line(line, this_package, friends)
             else :
                 process_line(line, this_package, required_packages)
 
@@ -107,6 +114,8 @@ def process_file(filename) :
 #   Print all headers for initial fixup. Change back later.
 #    if len(useless_headers) > 0 or len(missing_headers) > 0 :
     print(filename)
+    if len(friends) > 0 :
+        print_set("FRIENDS", friends)
     if len(useless_headers) > 0 :
         print_set("USELESS HEADERS", useless_headers)
     if len(missing_headers) > 0 :
