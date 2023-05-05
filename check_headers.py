@@ -120,27 +120,59 @@ def process_file(filename) :
         print_set("USELESS HEADERS", useless_headers)
     if len(missing_headers) > 0 :
         print_set("MISSING HEADERS", missing_headers)
-    generate_header_block(required_packages)
+    generate_header_block(filename, this_package, required_packages, friends)
     print()
 
-def generate_header_block(packages) :
+def generate_header_block(filename, this_package, packages, friends) :
 
     print("PROPOSED HEADER BLOCK")
     print("CHECK TO ENSURE THEY ARE REALLY NEEDED!!!")
 
     # H5private.h always comes first
-    generate_header("H5")
+    generate_header("H5", this_package, filename, friends)
  
     for p in sorted(list(packages)) :
-        generate_header(p)
+        generate_header(p, this_package, filename, friends)
 
-def generate_header(package) :
+# NB - filename and friends probably at the wrong abstraction layer...
+def generate_header(package, this_package, filename, friends) :
     # Start of open comment at column 33
     col_1 = 33
     # Start of close comment at column 77
     col_2 = 77
 
-    text = "#include \"" + package + "private.h\""
+    # What kind of file is this?
+    is_private = "private.h" in filename;
+    is_pkg     = "pkg.h"     in filename;
+    is_public  = "public.h"  in filename;
+    is_src     = ".c"        in filename;
+
+    text = ""
+
+    if is_public :
+        # Public headers always include other public headers
+        # They do NOT include a header for their own package
+        if package != this_package :
+            text = "#include \"" + package + "public.h\""
+    elif is_private :
+        # Private headers always include private headers
+        # They do NOT include a header for their own package
+        if package != this_package :
+            text = "#include \"" + package + "private.h\""
+    elif is_pkg :
+        # Package headers always include private headers
+        # They DO include a header for their own package
+        text = "#include \"" + package + "private.h\""
+    else :
+        # Source files include private headers
+        # They include pkg headers for their own package and friends
+        if package == this_package or package in friends :
+            text = "#include \"" + package + "pkg.h\""
+        else :
+            text = "#include \"" + package + "private.h\""
+
+    if text == "" :
+        return
 
     # Space between include file name and start of comment
     spaces_1 = " " * (col_1 - len(text) - 1)
