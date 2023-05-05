@@ -65,14 +65,14 @@ package_text = {
 }
 
 # A regular expression to pull out package names from strings
-pkg_re = re.compile(r'(H5[A-Z][A-Z2]*)')
+pkg_re = re.compile(r'(H5[A-Z][A-Z2]?)')
 
 def process_line(line, this_package, destination_set) :
 
     packages = pkg_re.findall(line)
 
     for pkg in packages :
-        if pkg != this_package :
+        if pkg in package_text :
             destination_set.add(pkg)
 
 def print_set(string, set_to_print) :
